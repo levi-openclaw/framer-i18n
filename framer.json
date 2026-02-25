@@ -1,6 +1,6 @@
 {
   "apiVersion": 1,
-  "id": "framer-i18n",
+  "id": "i18n",
   "name": "i18n",
   "description": "Localization and translation management for Framer",
   "icon": "globe",

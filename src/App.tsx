@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { HomeScreen } from './screens/HomeScreen'
 import { EditorScreen } from './screens/EditorScreen'
-import { Language, TranslationKey } from './types'
+import { Language } from './types'
 
 export type AppState = {
   languages: Language[]

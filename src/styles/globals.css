@@ -134,6 +134,52 @@ body {
   color: #667eea;
 }
 
+/* Add Language Modal */
+.add-lang-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #16213e;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #2a2a4a;
+  margin-bottom: 16px;
+}
+
+.add-lang-modal input {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #eaeaea;
+  font-size: 13px;
+}
+
+.add-lang-modal input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.add-lang-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.add-lang-actions button {
+  flex: 1;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.add-lang-actions button:last-child {
+  background: #2a2a4a;
+}
+
 /* Actions */
 .actions {
   display: flex;

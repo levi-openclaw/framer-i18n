@@ -1,13 +1,9 @@
 import { useState } from 'react'
-import { Language } from '../types'
+import { AppState } from '../App'
 
 interface EditorScreenProps {
-  state: {
-    languages: Language[]
-    translations: Record<string, Record<string, string>>
-    selectedKey: string | null
-  }
-  setState: any
+  state: AppState
+  setState: React.Dispatch<React.SetStateAction<AppState>>
   onBack: () => void
 }
 
@@ -15,45 +11,53 @@ export function EditorScreen({ state, setState, onBack }: EditorScreenProps) {
   const [selectedLang, setSelectedLang] = useState(state.languages[0]?.code || 'en')
   const [newKey, setNewKey] = useState('')
   const [showAddKey, setShowAddKey] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const keys = state.translations[selectedLang] 
+  const allKeys = state.translations[selectedLang]
     ? Object.keys(state.translations[selectedLang])
     : []
+  const keys = searchQuery
+    ? allKeys.filter((key) => {
+        const q = searchQuery.toLowerCase()
+        return key.toLowerCase().includes(q) ||
+          (state.translations[selectedLang]?.[key] || '').toLowerCase().includes(q)
+      })
+    : allKeys
 
   const addKey = () => {
     if (!newKey.trim()) return
-    
-    const updated = { ...state.translations }
+    const trimmed = newKey.trim()
+
+    const updated: Record<string, Record<string, string>> = {}
     for (const lang of state.languages) {
-      if (!updated[lang.code]) updated[lang.code] = {}
-      updated[lang.code][newKey.trim()] = ''
+      updated[lang.code] = { ...(state.translations[lang.code] || {}), [trimmed]: '' }
     }
-    
+
     setState({
       ...state,
       translations: updated,
-      selectedKey: newKey.trim()
+      selectedKey: trimmed
     })
     setNewKey('')
     setShowAddKey(false)
   }
 
   const updateTranslation = (key: string, value: string) => {
-    const updated = { ...state.translations }
-    if (!updated[selectedLang]) updated[selectedLang] = {}
-    updated[selectedLang][key] = value
-    
     setState({
       ...state,
-      translations: updated
+      translations: {
+        ...state.translations,
+        [selectedLang]: { ...(state.translations[selectedLang] || {}), [key]: value }
+      }
     })
   }
 
   const deleteKey = (key: string) => {
-    const updated = { ...state.translations }
+    const updated: Record<string, Record<string, string>> = {}
     for (const lang of state.languages) {
-      if (updated[lang.code]) {
-        delete updated[lang.code][key]
+      if (state.translations[lang.code]) {
+        const { [key]: _, ...rest } = state.translations[lang.code]
+        updated[lang.code] = rest
       }
     }
     setState({
@@ -85,6 +89,8 @@ export function EditorScreen({ state, setState, onBack }: EditorScreenProps) {
           type="text"
           placeholder="Search keys..."
           className="search-input"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button className="add-key-btn" onClick={() => setShowAddKey(true)}>
           + Add Key
